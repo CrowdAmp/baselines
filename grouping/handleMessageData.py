@@ -847,7 +847,13 @@ def chatBot():
     totalPredictions = 0
     queryStr = "SELECT * FROM unprocessedmessages WHERE id = (SELECT id FROM unprocessedmessages WHERE sentbyuser = 'True' AND influencerid = '" + influencerName + "' AND phrasegroup = " + str(uncategorizedId) + " ORDER BY timesent);"
     queryStr = "SELECT * FROM unprocessedmessages WHERE sentbyuser = 'True' and timesent in (SELECT  max(timesent)  FROM unprocessedmessages where influencerid = '" +  influencerName + "' GROUP BY userid) order by timesent desc;"
-    queryStr =  "SELECT * FROM unprocessedmessages WHERE sentbyuser = 'True' and influencerid = 'belieberbot' and phrasegroup > 1 and phrasegroup != 243 and phrasegroup != 270;"
+    if influencerName == 'beliebebot':
+    	queryStr =  "SELECT * FROM unprocessedmessages WHERE sentbyuser = 'True' and influencerid = 'belieberbot' and phrasegroup > 1 and phrasegroup != 243 and phrasegroup != 270;"
+    elif influencerName == 'trumpbot':
+    	queryStr = "select * from phraseids where phrasecategories = 'I don''t know' and influencerid = '" + influencerName + "';"
+    	executeDBCommand(conn, cur, queryStr);
+    	otherId = (cur.fetchall())[0][0]
+    	queryStr =  "SELECT * FROM unprocessedmessages WHERE sentbyuser = 'True' and influencerid = '" + influencerName + "' and phrasegroup > 1 and phrasegroup != " + str(otherId) + ";"
     
     executeDBCommand(conn, cur, queryStr)
     data = cur.fetchall()
@@ -855,7 +861,7 @@ def chatBot():
     for row in data:
         info = [row]
         if len(info) == 0:
-            print 'No more uncategorized messages for this influencer \n'
+            print 'No more uncategorized messages for ' + influencerName + '\n'
             break
 
 
@@ -881,7 +887,7 @@ def chatBot():
 
                 if False:
                     print "-------------predicting\n", clean_test_set[0], "into", predicted[0], categoryDict[predicted[0]], "categoryPrediction", groupingDict[predicted[0]], "should be", row[8], "\nconfidence: ", np.max(model.predict_proba(test_data_features)[0]), "threshold:", thresholdDict[predicted[0]][0]
-                    predictionExceptios = (int(groupingDict[predicted[0]]) == 261 and int(row[8]) == 262) or (int(groupingDict[predicted[0]]) == 255 and int(row[8]) == 257) or (int    (groupingDict[predicted[0]]) == 255 and int(row[8]) == 265) or (int(groupingDict[predicted[0]]) == 252 and int(row[8]) == 275)
+                    predictionExceptios = (int(groupingDict[predicted[0]]) == 261 and int(row[8]) == 262) or (int(groupingDict[predicted[0]]) == 255 and int(row[8]) == 257) or (int(groupingDict[predicted[0]]) == 255 and int(row[8]) == 265) or (int(groupingDict[predicted[0]]) == 252 and int(row[8]) == 275)
                     if int(groupingDict[predicted[0]]) == int(row[8]) or  predictionExceptios :
                         predictedCorrectly += 1
                 else:
