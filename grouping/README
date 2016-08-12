@@ -1,0 +1,52 @@
+* Contents of Submission
+
+data/example.csv - sample data from large database file
+code/baseline.py - baseline and oracle implementation
+code/final.py - main implementation
+code/KaggleWord2VecUtility.py - tokenizer/sanitizer
+code/progress.py - code for progress report
+code/select_example.py - select example slice of data
+
+* How to Run this Project
+
+** Requirements
+
+Download dataset: https://www.kaggle.com/c/reddit-comments-may-2015/download/database.7z (Size: 7.90 GB)
+
+Download pre-trained word vectors: https://www.dropbox.com/sh/iju9j31n484rgre/AABdTtL5iDKCzl8IuMyqsUoJa?dl=0
+
+We ran the project using Python 2.7 and Mac OS X / Ubuntu.
+
+Install Python packages: numpy, scikit-learn, nltk, keras, cython, gensim/word2vec
+
+See flag documentation in final.py for more details. Note that for the RNN you may need to run on a smaller dataset if memory constrained (e.g., not on AWS EC2 instance g2.8xlarge). If you want to use a GPU to enhance performance on the neural network runs, prefix commands with:
+
+THEANO_FLAGS=mode=FAST_RUN,device=gpu,floatX=float32 
+
+** Baseline
+
+Enable baseline function in baseline.py then run: 
+
+python baseline.py
+
+** Oracle
+
+Enable oracle function in baseline.py then run: 
+
+python baseline.py
+
+** Logistic Regression / BOW
+
+python final.py -n 25000 -m "bw" -c "lr" ../database.sqlite
+
+** RNN / Word Vectors
+
+python final.py -n 25000 -i '300features_40minwords_10context_2667069comments' -m 'wv' -c 'nn' ../database.sqlite
+
+* References
+
+We leveraged the following resources while implementing the bag of words / logistic regression model:
+
+- https://www.kaggle.com/c/word2vec-nlp-tutorial (see parts 1-4 for more details)
+- https://github.com/wendykan/DeepLearningMovies/blob/master/BagOfWords.py
+- http://nbviewer.ipython.org/github/justmarkham/gadsdc1/blob/master/logistic_assignment/kevin_logistic_sklearn.ipynb
